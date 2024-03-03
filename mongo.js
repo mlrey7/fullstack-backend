@@ -1,28 +1,24 @@
 const mongoose = require("mongoose");
-
-if (process.argv.length < 3) {
-  console.log("give password as argument");
-  process.exit(1);
-}
-
-const password = process.argv[2];
-
-const url = `mongodb+srv://fullstack:${password}@cluster0.pvqiwp8.mongodb.net/noteApp?retryWrites=true&w=majority&appName=Cluster0`;
+const config = require("./utils/config");
+const Note = require("./models/note");
 
 mongoose.set("strictQuery", false);
 
-mongoose.connect(url);
+mongoose.connect(config.MONGODB_URI);
 
-const noteSchema = new mongoose.Schema({
-  content: String,
-  important: Boolean,
+const newNote = new Note({
+  content: "asdasdfasdfasdf",
+  important: true,
 });
 
-const Note = mongoose.model("Note", noteSchema);
-
-Note.find({}).then((result) => {
-  result.forEach((note) => {
-    console.log(note);
-  });
+newNote.save().then((note) => {
+  console.log(note);
   mongoose.connection.close();
 });
+
+// Note.find({}).then((result) => {
+//   result.forEach((note) => {
+//     console.log(note);
+//   });
+//   mongoose.connection.close();
+// });
